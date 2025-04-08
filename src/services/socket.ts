@@ -15,7 +15,6 @@ class WebSocketAdapter implements CommonSocket {
   constructor(url: string) {
     this.ws = new WebSocket(url);
 
-    // Promessa que só resolve quando o socket estiver aberto
     this.isReady = new Promise((resolve) => {
       this.ws.onopen = () => {
         console.log('[WS] Conectado com sucesso:', url);
@@ -57,13 +56,11 @@ class WebSocketAdapter implements CommonSocket {
 
 }
 
-// Função dinâmica que obtém IP do localStorage ou URL atual
 const getDynamicBackendUrl = () => {
   const host = localStorage.getItem('server_ip') || window.location.hostname;
   return `ws://${host}:4000`;
 };
 
-// Exportação completa sem simplificação
 export const socket: CommonSocket = VITE_USE_MOCK
   ? mock
   : new WebSocketAdapter(getDynamicBackendUrl());

@@ -129,7 +129,7 @@ export default function CarSelectionPage() {
                 <label className="text-white mb-1 block text-sm">Nível da bateria (1 a 100)</label>
                 <div className="max-h-40 overflow-y-auto rounded-xl">
                   <Dropdown
-                    options={Array.from({ length: 91 }, (_, i) => `${i + 10}`)} // de 10 a 100
+                    options={Array.from({ length: 91 }, (_, i) => `${i + 10}`)}
                     value={batteryLevel}
                     onChange={setBatteryLevel}
                   />

@@ -16,7 +16,7 @@ wss.on("connection", (ws) => {
       "[BRIDGE] 📦 Mensagem recebida do frontend:",
       message.toString()
     );
-    tcpClient.write(message + "\n"); // envia com quebra de linha como delimitador
+    tcpClient.write(message + "\n");
   });
 
   tcpClient.on("data", (data) => {
@@ -26,7 +26,6 @@ wss.on("connection", (ws) => {
 
       console.log("[BRIDGE] 📨 Mensagem recebida do backend:", parsed);
 
-      // Envia para o frontend no formato: { type, data }
       ws.send(JSON.stringify({ type, data: parsed }));
     } catch (err) {
       console.error("[BRIDGE] ❌ Erro ao parsear resposta do backend:", err);

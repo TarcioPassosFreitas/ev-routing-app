@@ -28,7 +28,8 @@ import CancelRouteModal from '../molecules/CancelRouteModal'
 import ConfirmationModal from '../molecules/ConfirmationModal'
 import GooglePlacesSearch, { GooglePlacesSearchRef } from '../molecules/GooglePlacesSearch'
 import NearestStationModal from '../molecules/NearestStationModal'
-import TowingModal from '../molecules/TowingModal'
+import SuccessNavigationModal from '../molecules/SuccessNavigationModal'
+
 
 
 export default function FuturisticMapFrame() {
@@ -55,7 +56,9 @@ export default function FuturisticMapFrame() {
   const [showStationChoiceModal, setShowStationChoiceModal] = useState(false)
   const [selectedStationName, setSelectedStationName] = useState('')
   const [selectedStationId, setSelectedStationId] = useState<string | null>(null)
-  const [showTowingModal, setShowTowingModal] = useState(false)
+  const [, setShowTowingModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+
 
 
   useEffect(() => {
@@ -125,7 +128,16 @@ export default function FuturisticMapFrame() {
         setWarningMessage(navResponse.data.message)
         setAutonomy(navResponse.data.autonomy)
         setShowWarningModal(true)
+      } else {
+        setWarningMessage('Você conseguirá chegar ao destino com sua autonomia atual. Boa viagem!')
+        setAutonomy(navResponse.data.autonomy)
+        setShowSuccessModal(true)
+        searchRef.current?.clearInput()
+        setModalOpen(false)
+        return
       }
+
+
 
       await wait(1000)
 
@@ -217,12 +229,6 @@ export default function FuturisticMapFrame() {
     localStorage.removeItem('user_id')
   }
 
-  const handleCloseTowing = () => {
-  setShowTowingModal(false)
-  confirmCancelRoute()
-  localStorage.clear()
-  window.location.href = '/'
-}
 
 
   return (
@@ -381,9 +387,10 @@ export default function FuturisticMapFrame() {
             }}
             onReject={handleRejectStation}
           />
-          <TowingModal
-            isOpen={showTowingModal}
-            onClose={handleCloseTowing}
+          <SuccessNavigationModal
+            isOpen={showSuccessModal}
+            onClose={() => setShowSuccessModal(false)}
+            message={warningMessage}
           />
         </div>
       </div>
