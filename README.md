@@ -86,7 +86,7 @@ ipconfig # ou ifconfig
 ```bash
 npm run build
 npm install -g serve
-serve -s dist -l 192.168.0.157:5173
+serve -s dist -l 5173
 ```
 
 ### 📱 5. Acessar do celular (ou qualquer outro dispositivo na mesma rede)
