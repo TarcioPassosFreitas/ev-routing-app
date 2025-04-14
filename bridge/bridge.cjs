@@ -1,11 +1,22 @@
 const net = require("net");
 const WebSocket = require("ws");
 
-const tcpClient = new net.Socket();
-const wss = new WebSocket.Server({ port: 4000 });
+const backendHost = "server";
+const backendPort = 8888;
+const bridgePort = 4000;
 
-tcpClient.connect(8888, "127.0.0.1", () => {
-  console.log("[BRIDGE] ✅ TCP conectado ao Backend na porta 8888");
+const tcpClient = new net.Socket();
+const wss = new WebSocket.Server({ port: bridgePort });
+
+console.log(`[BRIDGE] 🌐 WebSocket escutando em ws://0.0.0.0:${bridgePort}`);
+console.log(
+  `[BRIDGE] 🔌 Conectando ao backend TCP em ${backendHost}:${backendPort}...`
+);
+
+tcpClient.connect(backendPort, backendHost, () => {
+  console.log(
+    `[BRIDGE] ✅ TCP conectado ao backend em ${backendHost}:${backendPort}`
+  );
 });
 
 wss.on("connection", (ws) => {
@@ -25,7 +36,6 @@ wss.on("connection", (ws) => {
       const type = parsed.type || "UNKNOWN";
 
       console.log("[BRIDGE] 📨 Mensagem recebida do backend:", parsed);
-
       ws.send(JSON.stringify({ type, data: parsed }));
     } catch (err) {
       console.error("[BRIDGE] ❌ Erro ao parsear resposta do backend:", err);
@@ -39,4 +49,8 @@ wss.on("connection", (ws) => {
 
 tcpClient.on("close", () => {
   console.log("[BRIDGE] ⚠️ Desconectado do backend.");
+});
+
+tcpClient.on("error", (err) => {
+  console.error("[BRIDGE] ❌ Erro ao conectar ao backend:", err.message);
 });
